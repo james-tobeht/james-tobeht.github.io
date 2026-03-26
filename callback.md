@@ -1,0 +1,4 @@
+---
+permalink: /callback
+---
+<!doctype html><html><head><meta charset="utf-8"><title>OAuth Callback</title></head><body><h1>OAuth Callback</h1><p>You can close this window.</p></body></html>
