@@ -24,9 +24,7 @@
       <p><strong>Auth code:</strong> <span id="maskedCode">(none)</span></p>
 
       <h3>Post Test Video (Sandbox)</h3>
-      <p class="small">This sends a <code>push_by_file</code> request to TikTok Content Posting API and prints the API response.</p>
-      <label>Access Token (sandbox)</label>
-      <input id="accessToken" type="password" placeholder="Paste OAuth access_token" />
+      <p class="small">This button calls a local Node proxy at <code>http://127.0.0.1:8787/post-test</code> to run TikTok API server-side.</p>
       <label>Video URL (small test mp4)</label>
       <input id="videoUrl" type="url" value="https://samplelib.com/lib/preview/mp4/sample-5s.mp4" />
       <button id="postBtn" class="btn">Post Test Video</button>
@@ -50,40 +48,22 @@
     }
 
     async function postTestVideo() {
-      const token = document.getElementById('accessToken').value.trim();
-      const videoUrl = document.getElementById('videoUrl').value.trim();
       const out = document.getElementById('apiResponse');
       const btn = document.getElementById('postBtn');
+      const videoUrl = document.getElementById('videoUrl').value.trim();
 
-      if (!token) {
-        out.textContent = 'Missing access token.';
+      if (!code) {
+        out.textContent = 'Missing OAuth code in URL.';
         return;
       }
 
-      const body = {
-        post_info: {
-          title: 'OpenClaw sandbox API test',
-          privacy_level: 'SELF_ONLY',
-          disable_duet: true,
-          disable_comment: true,
-          disable_stitch: true
-        },
-        source_info: {
-          source: 'PULL_FROM_URL',
-          video_url: videoUrl
-        }
-      };
-
       btn.disabled = true;
-      out.textContent = 'Sending request...';
+      out.textContent = 'Calling local proxy...';
       try {
-        const res = await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
+        const res = await fetch('http://127.0.0.1:8787/post-test', {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json; charset=UTF-8'
-          },
-          body: JSON.stringify(body)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, videoUrl })
         });
         const txt = await res.text();
         let parsed;
