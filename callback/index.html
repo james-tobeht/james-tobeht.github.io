@@ -1,1 +1,102 @@
-<!doctype html><html><head><meta charset="utf-8"><title>OAuth Callback</title></head><body><h1>OAuth Callback</h1><p>You can close this window.</p></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OpenClaw — OAuth Callback</title>
+  <style>
+    body{font-family:Inter,Arial;background:#0e1428;color:#eef2ff;margin:0}
+    main{max-width:900px;margin:32px auto;padding:0 20px}
+    .card{background:#151d3a;border:1px solid #2d3a6b;border-radius:14px;padding:24px}
+    .ok{color:#74f0a7;font-weight:700}
+    .btn{display:inline-block;margin-top:14px;background:#6aa3ff;color:#061332;padding:12px 16px;border-radius:10px;font-weight:700;border:0;cursor:pointer}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    pre{white-space:pre-wrap;word-break:break-word;background:#0b1126;padding:14px;border-radius:10px;border:1px solid #2d3a6b}
+    input{background:#0b1126;color:#eef2ff;border:1px solid #2d3a6b;border-radius:8px;padding:10px;width:100%;margin:8px 0}
+    .small{font-size:13px;color:#b8c1ea}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>OpenClaw — TikTok OAuth Callback</h1>
+      <p id="statusText"></p>
+      <p><strong>Auth code:</strong> <span id="maskedCode">(none)</span></p>
+
+      <h3>Post Test Video (Sandbox)</h3>
+      <p class="small">This sends a <code>push_by_file</code> request to TikTok Content Posting API and prints the API response.</p>
+      <label>Access Token (sandbox)</label>
+      <input id="accessToken" type="password" placeholder="Paste OAuth access_token" />
+      <label>Video URL (small test mp4)</label>
+      <input id="videoUrl" type="url" value="https://samplelib.com/lib/preview/mp4/sample-5s.mp4" />
+      <button id="postBtn" class="btn">Post Test Video</button>
+      <pre id="apiResponse">API response will appear here.</pre>
+    </div>
+  </main>
+
+  <script>
+    const qp = new URLSearchParams(window.location.search);
+    const code = qp.get('code') || '';
+    const statusText = document.getElementById('statusText');
+    const maskedCodeEl = document.getElementById('maskedCode');
+
+    if (code) {
+      const masked = code.length <= 8 ? code : code.slice(0, 8) + '*'.repeat(Math.max(4, Math.min(24, code.length - 8)));
+      statusText.innerHTML = '<span class="ok">Authorization successful! OpenClaw now has permission to post on your behalf.</span>';
+      maskedCodeEl.textContent = masked;
+    } else {
+      statusText.textContent = 'Authorization code not found in URL query parameters.';
+      maskedCodeEl.textContent = '(missing code)';
+    }
+
+    async function postTestVideo() {
+      const token = document.getElementById('accessToken').value.trim();
+      const videoUrl = document.getElementById('videoUrl').value.trim();
+      const out = document.getElementById('apiResponse');
+      const btn = document.getElementById('postBtn');
+
+      if (!token) {
+        out.textContent = 'Missing access token.';
+        return;
+      }
+
+      const body = {
+        post_info: {
+          title: 'OpenClaw sandbox API test',
+          privacy_level: 'SELF_ONLY',
+          disable_duet: true,
+          disable_comment: true,
+          disable_stitch: true
+        },
+        source_info: {
+          source: 'PULL_FROM_URL',
+          video_url: videoUrl
+        }
+      };
+
+      btn.disabled = true;
+      out.textContent = 'Sending request...';
+      try {
+        const res = await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json; charset=UTF-8'
+          },
+          body: JSON.stringify(body)
+        });
+        const txt = await res.text();
+        let parsed;
+        try { parsed = JSON.parse(txt); } catch { parsed = txt; }
+        out.textContent = JSON.stringify({ http_status: res.status, response: parsed }, null, 2);
+      } catch (err) {
+        out.textContent = 'Request failed: ' + (err?.message || String(err));
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById('postBtn').addEventListener('click', postTestVideo);
+  </script>
+</body>
+</html>
