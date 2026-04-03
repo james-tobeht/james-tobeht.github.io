@@ -3,31 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OpenClaw — TikTok Integration Demo</title>
-  <style>body{font-family:Inter,Arial;background:#0e1428;color:#eef2ff;margin:0}main{max-width:840px;margin:40px auto;padding:0 20px}.card{background:#151d3a;border:1px solid #2d3a6b;border-radius:14px;padding:28px}a.btn{display:inline-block;margin-top:14px;background:#6aa3ff;color:#061332;padding:12px 16px;border-radius:10px;font-weight:700;text-decoration:none}.meta{font-size:13px;color:#b8c1ea;word-break:break-all}</style>
+  <title>JamesTobeht — TikTok Integration Demo</title>
+  <style>
+    body{font-family:Inter,Arial;background:#0e1428;color:#eef2ff;margin:0}
+    nav{display:flex;align-items:center;gap:10px;padding:20px;font-weight:800;font-size:18px}
+    nav img{width:40px;height:40px;border-radius:10px}
+    main{max-width:840px;margin:20px auto;padding:0 20px}
+    .card{background:#151d3a;border:1px solid #2d3a6b;border-radius:14px;padding:28px}
+    a.btn{display:inline-block;margin-top:14px;background:#6aa3ff;color:#061332;padding:12px 16px;border-radius:10px;font-weight:700;text-decoration:none}
+    .meta{font-size:13px;color:#b8c1ea;word-break:break-all}
+  </style>
 </head>
 <body>
+  <nav>
+    <img src="/openclaw-icon.jpg" alt="JamesTobeht icon">
+    JamesTobeht
+  </nav>
   <main>
     <div class="card">
-      <h1>OpenClaw — TikTok Integration Demo</h1>
-      <p>OpenClaw is a social media management platform for content creators. Connect your TikTok account to schedule and publish videos.</p>
-      <a id="connect" class="btn" href="#">Connect TikTok Account</a>
-      <p class="meta" id="oauthUrl"></p>
-    </div>
-  </main>
-  <script>
-    const clientKey = 'sbawzgzvqp8zbmen6h';
-    const redirectUri = 'https://james-tobeht.github.io/callback';
-    const scopes = ['user.info.basic','user.info.profile','user.info.stats','video.list','video.upload','video.publish'];
-    const state = 'openclaw-demo-' + Date.now();
-    const auth = new URL('https://www.tiktok.com/v2/auth/authorize/');
-    auth.searchParams.set('client_key', clientKey);
-    auth.searchParams.set('scope', scopes.join(','));
-    auth.searchParams.set('response_type', 'code');
-    auth.searchParams.set('redirect_uri', redirectUri);
-    auth.searchParams.set('state', state);
-    document.getElementById('connect').href = auth.toString();
-    document.getElementById('oauthUrl').textContent = auth.toString();
-  </script>
-</body>
-</html>
+      <h1>JamesTobeht — TikTok Integration Demo</h1>
+      <p>JamesTobeht is a social media management platform for content creators. Connect your TikTok account to schedule and publish vide
