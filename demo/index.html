@@ -22,4 +22,24 @@
   <main>
     <div class="card">
       <h1>JamesTobeht — TikTok Integration Demo</h1>
-      <p>JamesTobeht is a social media management platform for content creators. Connect your TikTok account to schedule and publish vide
+      <p>JamesTobeht is a social media management platform for content creators. Connect your TikTok account to schedule and publish videos.</p>
+      <a id="connect" class="btn" href="#">Connect TikTok Account</a>
+      <p class="meta" id="oauthUrl"></p>
+    </div>
+  </main>
+  <script>
+    const clientKey = 'sbawzgzvqp8zbmen6h';
+    const redirectUri = 'https://james-tobeht.github.io/callback';
+    const scopes = ['user.info.basic','user.info.profile','user.info.stats','video.list','video.upload','video.publish'];
+    const state = 'jamesTobeht-demo-' + Date.now();
+    const auth = new URL('https://www.tiktok.com/v2/auth/authorize/');
+    auth.searchParams.set('client_key', clientKey);
+    auth.searchParams.set('scope', scopes.join(','));
+    auth.searchParams.set('response_type', 'code');
+    auth.searchParams.set('redirect_uri', redirectUri);
+    auth.searchParams.set('state', state);
+    document.getElementById('connect').href = auth.toString();
+    document.getElementById('oauthUrl').textContent = auth.toString();
+  </script>
+</body>
+</html>
